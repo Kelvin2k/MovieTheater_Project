@@ -1,0 +1,16 @@
+.ant-carousel .slick-dots li button {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  background: #fff !important;
+  opacity: 0.5;
+}
+
+.slick-slide .ant-card {
+  background-color: unset;
+  border: none;
+}
+
+/* .ant-card-head {
+  border: none !important;
+} */

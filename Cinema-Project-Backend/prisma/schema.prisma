@@ -1,0 +1,114 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Banner {
+  banner_id Int    @id @default(autoincrement())
+  movie_id  Int
+  image     String @db.VarChar(1000)
+  Movie     Movie  @relation(fields: [movie_id], references: [movie_id], onDelete: Cascade, onUpdate: NoAction, map: "Banner_ibfk_1")
+
+  @@index([movie_id], map: "movie_id")
+}
+
+model Cinema {
+  cinema_id         Int            @id @default(autoincrement())
+  cinema_name       String         @db.VarChar(200)
+  cinema_complex_id Int?
+  CinemaComplex     CinemaComplex? @relation(fields: [cinema_complex_id], references: [cinema_complex_id], onDelete: Cascade, onUpdate: NoAction, map: "Cinema_ibfk_1")
+  Seat              Seat[]
+  ShowTimes         ShowTimes[]
+
+  @@index([cinema_complex_id], map: "cinema_complex_id")
+}
+
+model CinemaChain {
+  cinema_chain_id   Int             @id @default(autoincrement())
+  cinema_chain_name String          @db.VarChar(200)
+  logo              String          @db.VarChar(1000)
+  CinemaComplex     CinemaComplex[]
+}
+
+model CinemaComplex {
+  cinema_complex_id   Int          @id @default(autoincrement())
+  cinema_complex_name String       @db.VarChar(200)
+  address             String       @db.VarChar(200)
+  cinema_chain_id     Int?
+  CinemaList          Cinema[]
+  CinemaChain         CinemaChain? @relation(fields: [cinema_chain_id], references: [cinema_chain_id], onDelete: Cascade, onUpdate: NoAction, map: "CinemaComplex_ibfk_1")
+
+  @@index([cinema_chain_id], map: "cinema_chain_id")
+}
+
+model Movie {
+  movie_id     Int         @id @default(autoincrement())
+  movie_name   String      @unique(map: "movie_name") @db.VarChar(200)
+  trailer      String?     @db.VarChar(5000)
+  image        String      @db.VarChar(5000)
+  description  String?     @db.VarChar(500)
+  opening_date DateTime    @db.Date
+  rate         Int?
+  hot          Boolean
+  now_showing  Boolean
+  coming_soon  Boolean
+  Banner       Banner[]
+  ShowTimes    ShowTimes[]
+}
+
+model Seat {
+  seat_id    Int       @id @default(autoincrement())
+  seat_name  String?   @db.VarChar(50)
+  seat_type  String?   @db.VarChar(50)
+  cinema_id  Int?
+  seat_price Int?
+  Booking    Booking[]
+  Cinema     Cinema?   @relation(fields: [cinema_id], references: [cinema_id], onDelete: Cascade, onUpdate: NoAction, map: "Seat_ibfk_1")
+
+  @@index([cinema_id], map: "cinema_id")
+}
+
+model ShowTimes {
+  showtimes_id   Int       @id @default(autoincrement())
+  cinema_id      Int?
+  movie_id       Int?
+  screening_time DateTime  @db.DateTime(0)
+  ticket_price   Int
+  Booking        Booking[]
+  Cinema         Cinema?   @relation(fields: [cinema_id], references: [cinema_id], onDelete: Cascade, onUpdate: NoAction, map: "ShowTimes_ibfk_1")
+  Movie          Movie?    @relation(fields: [movie_id], references: [movie_id], onDelete: Cascade, onUpdate: NoAction, map: "ShowTimes_ibfk_2")
+
+  @@unique([cinema_id, screening_time], map: "unique_cinema_time")
+  @@index([cinema_id], map: "cinema_id")
+  @@index([movie_id], map: "movie_id")
+}
+
+model Booking {
+  ticket_id    Int       @id @default(autoincrement())
+  account_id   Int
+  showtimes_id Int
+  seat_id      Int
+  date         DateTime? @default(now()) @db.DateTime(0)
+  User         User      @relation(fields: [account_id], references: [account_id], onDelete: Cascade, onUpdate: NoAction, map: "Booking_ibfk_1")
+  ShowTimes    ShowTimes @relation(fields: [showtimes_id], references: [showtimes_id], onDelete: Cascade, onUpdate: NoAction, map: "Booking_ibfk_2")
+  Seat         Seat      @relation(fields: [seat_id], references: [seat_id], onDelete: Cascade, onUpdate: NoAction, map: "Booking_ibfk_3")
+
+  @@unique([account_id, showtimes_id, seat_id], map: "unique_booking")
+  @@index([seat_id], map: "seat_id")
+  @@index([showtimes_id], map: "showtimes_id")
+}
+
+model User {
+  account_id   Int       @id @default(autoincrement())
+  name         String?   @db.VarChar(50)
+  email        String    @unique(map: "email") @db.VarChar(100)
+  phone_number String?   @db.VarChar(20)
+  password     String?   @db.VarChar(1000)
+  user_type    String?   @db.VarChar(50)
+  Booking      Booking[]
+}

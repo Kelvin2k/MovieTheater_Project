@@ -1,0 +1,19 @@
+.ant-modal-container {
+  background-color: black;
+}
+
+.slick-next:before {
+  display: none;
+}
+.slick-prev:before {
+  display: none;
+}
+
+.slick-dots {
+  color: white;
+}
+
+.slick-dots li button:before {
+  color: white;
+  font-size: 15px;
+}
