@@ -33,6 +33,7 @@ RUN yarn install --frozen-lockfile --production
 # Copy built code and database schema from builder stage
 COPY --from=builder /usr/node_app/dist ./dist
 COPY --from=builder /usr/node_app/prisma ./prisma
+COPY --from=builder /usr/node_app/public ./public
 
 EXPOSE 8080
 
