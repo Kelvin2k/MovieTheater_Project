@@ -3,7 +3,7 @@ import { getLocalStorage } from "../utils/local";
 
 const dataUser = getLocalStorage("userInfo");
 export const https = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: process.env.REACT_APP_API_URL,
   timeout: 15000,
   headers: {
     Token: dataUser ? dataUser.token : null,
@@ -29,7 +29,7 @@ https.interceptors.response.use(function (response) {
 });
 
 export const adminHttps = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: process.env.REACT_APP_API_URL,
   timeout: 15000,
   headers: {
     Authorization: "Bearer " + process.env.REACT_APP_AUTHORIZATION_TOKEN,
