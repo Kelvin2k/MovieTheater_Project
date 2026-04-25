@@ -13,7 +13,6 @@ const HotMovie = () => {
   const [hotMovie, setHotMovie] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [showSlides, setShowSlides] = useState(0);
   const dispatch = useDispatch();
 
   const handlePlayClick = (movie) => {
