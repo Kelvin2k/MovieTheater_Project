@@ -13,9 +13,7 @@ export class BookingService {
   //Booking Ticket
   async bookingTicket(data: BookingTicketDto, user: any): Promise<any> {
     const { account_id } = user.data;
-    console.log(account_id);
 
-    console.log(data);
 
     const seatArr = data.ticket_list.map((item) => item.seat_id);
     const isExistBooking = await this.prisma.booking.findMany({
@@ -52,7 +50,6 @@ export class BookingService {
       },
     });
     if (!showTimesInfo) throw new Error('Can not find this show time!');
-    console.log(showTimesInfo);
 
     const bookingTicket = await this.prisma.booking.createMany({
       data: finalData,

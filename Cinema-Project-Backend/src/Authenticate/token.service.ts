@@ -29,7 +29,6 @@ export class TokenService {
   }
   async validateToken(token: string): Promise<any> {
     const validate = this.jwtService.decode(token);
-    console.log(validate);
 
     return validate;
   }

@@ -78,8 +78,6 @@ export class MovieController {
     @UploadedFile() file: Express.Multer.File,
     @Body() data: MovieDto,
   ): Promise<Movie> {
-    console.log('hello');
-
     return await this.movieService.addNewMovie(data, file);
   }
 
@@ -106,10 +104,6 @@ export class MovieController {
     @Headers('Token') token: string,
   ) {
     const user = await this.tokenService.validateToken(token);
-    console.log(token);
-
-    console.log(user);
-
     return await this.movieService.deleteMovie(+movie_id, user);
   }
 

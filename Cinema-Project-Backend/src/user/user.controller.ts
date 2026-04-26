@@ -97,11 +97,7 @@ export class UserController {
     @Query('AccountId') account_id: number,
     @Headers('Token') admin_token: string,
   ): Promise<any> {
-    console.log(admin_token);
-
     const user = await this.tokenService.validateToken(admin_token);
-
-    console.log(account_id, user);
 
     return await this.userService.getAccountInfo(user, +account_id);
   }

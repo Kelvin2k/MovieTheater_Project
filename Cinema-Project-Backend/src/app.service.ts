@@ -9,7 +9,6 @@ export class AppService {
   }
   async createSeat(): Promise<any> {
     const cinemas = await this.prisma.cinema.findMany();
-    console.log(cinemas);
     let allSeatsData: {
       seat_name: string;
       seat_type: string;
