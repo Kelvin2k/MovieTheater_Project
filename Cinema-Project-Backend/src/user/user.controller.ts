@@ -21,8 +21,8 @@ import { AddUserDto } from './dto/addUser.dto';
 import { TokenService } from 'src/Authenticate/token.service';
 import { UpdateUserDto } from './dto/updateUser.dto';
 
-// @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('user')
 export class UserController {
   constructor(
@@ -92,9 +92,6 @@ export class UserController {
   }
 
   // Get user info based on token
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
-
   @Post('/get-account-info')
   async getAccountInfo(
     @Query('AccountId') account_id: number,
@@ -110,8 +107,6 @@ export class UserController {
   }
 
   // Add user
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
   @Post('/add-user')
   async addUser(
     @Body() data: AddUserDto,
@@ -122,8 +117,6 @@ export class UserController {
   }
 
   // Update user
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
   @Post('/update-user')
   async updateUser(
     @Body() data: UpdateUserDto,

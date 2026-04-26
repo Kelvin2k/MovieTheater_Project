@@ -4,8 +4,8 @@ import { CinemaChain, CinemaComplex } from 'src/generated/prisma/client';
 import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/jwtAuthGuard';
 
-// @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('cinema')
 export class CinemaController {
   constructor(private readonly cinemaService: CinemaService) {}

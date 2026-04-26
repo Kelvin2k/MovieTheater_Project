@@ -26,8 +26,8 @@ import { GetMovieByDateDto } from './dto/getMovieByDate.dto';
 import { JwtAuthGuard } from 'src/jwtAuthGuard';
 import { TokenService } from 'src/Authenticate/token.service';
 
-// @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('movie')
 export class MovieController {
   constructor(

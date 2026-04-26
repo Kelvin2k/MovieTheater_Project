@@ -17,16 +17,15 @@ import type { Request } from 'express';
 import { CreateShowTimeDto } from './dto/createShowTime.dto';
 import { TokenService } from 'src/Authenticate/token.service';
 
-// @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('booking')
 export class BookingController {
   constructor(
     private readonly bookingService: BookingService,
     private readonly tokenService: TokenService,
   ) {}
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
+
   @Post('/booking-ticket')
   async bookingTicket(
     @Body() data: BookingTicketDto,
