@@ -90,7 +90,7 @@ const EditMovie = () => {
       .getMovieInfo(movieId)
       .then((result) => {
         const newValue = result.data;
-        formik.setValues({
+        setValues({
           movie_id: newValue.movie_id ?? "",
           movie_name: newValue.movie_name ?? "",
           trailer: newValue.trailer ?? "",
