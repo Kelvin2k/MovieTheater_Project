@@ -72,6 +72,7 @@ const EditMovie = () => {
     handleSubmit,
     setFieldValue,
     setFieldTouched,
+    setValues,
   } = formik;
 
   const [image, setImage] = useState("");
