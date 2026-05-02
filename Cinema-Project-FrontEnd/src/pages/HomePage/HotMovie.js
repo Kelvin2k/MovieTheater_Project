@@ -64,18 +64,10 @@ const HotMovie = () => {
     setIsModalOpen(false);
   };
 
-  Array.from(document.querySelectorAll("*"))
-    .filter((el) => el.scrollWidth > document.documentElement.clientWidth)
-    .map((el) => ({
-      tag: el.tagName,
-      id: el.id,
-      cls: el.className,
-      sw: el.scrollWidth,
-    }));
   return (
     <div className="" id="hot_movie">
       <h2 className="text-3xl md:text-5xl text-center font-bold uppercase text-red-500 my-5">
-        Hot Movie
+        Hot Movies
       </h2>
       <Slider {...settings}>
         {hotMovie?.map((movie, index) => {

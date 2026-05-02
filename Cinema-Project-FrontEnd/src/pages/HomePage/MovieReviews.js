@@ -8,25 +8,12 @@ import "./MovieReview.css";
 const MovieReviews = () => {
   const [listReviews, setListReviews] = useState([]);
   const [listHotMovie, setListHotMovie] = useState([]);
-  const [showSlides, setShowSlides] = useState(0);
-
-  useEffect(() => {
-    const updateSlides = () => {
-      const w = window.innerWidth;
-      if (w < 768) setShowSlides(1);
-      else if (w < 1280) setShowSlides(2);
-      else setShowSlides(3);
-    };
-    updateSlides();
-    window.addEventListener("resize", updateSlides);
-    return () => window.removeEventListener("resize", updateSlides);
-  }, []);
 
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: showSlides || 3,
+    slidesToShow: 3,
     slidesToScroll: 1,
     responsive: [
       {
@@ -39,7 +26,7 @@ const MovieReviews = () => {
         },
       },
       {
-        breakpoint: 640,
+        breakpoint: 768,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
