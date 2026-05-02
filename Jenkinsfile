@@ -14,7 +14,7 @@ pipeline {
                     ])
                     {
                         sh """
-                            ssh -o StrictHostKeyChecking=no -i ${KEY} ${SSH_USER}@${VPS_IP} << EOF
+                            ssh -o StrictHostKeyChecking=no -i \${KEY} \${SSH_USER}@${VPS_IP} << EOF
                                 cd ${DEPLOY_PATH} && git pull
                                 docker-compose down
                                 docker-compose build
