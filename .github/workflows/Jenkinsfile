@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+
+    environment {
+        DEPLOY_PATH = '/root/MovieTheater_Project'
+        VPS_IP = '134.209.126.127'
+    }
+
+    stages {
+        stage('deploy') {
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(credentialsId: 'SSH_KEY', keyFileVariable: 'KEY', usernameVariable: 'SSH_USER')
+                    ])
+                    {
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no -i ${KEY} ${SSH_USER}@${VPS_IP} << EOF
+                                cd ${DEPLOY_PATH} && git pull
+                                docker-compose down
+                                docker-compose build
+                                docker-compose up -d
+EOF
+                        '''
+                    }
+            }
+        }
+    }
+}
