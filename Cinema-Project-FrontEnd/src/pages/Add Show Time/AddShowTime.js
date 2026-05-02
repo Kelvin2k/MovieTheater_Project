@@ -45,8 +45,6 @@ const AddShowTime = () => {
     },
     validationSchema: validateCreateShowTime,
     onSubmit: (values, { resetForm }) => {
-      console.log(values);
-
       cinemaSchedule
         .createShowTime(values)
         .then((result) => {
@@ -127,7 +125,7 @@ const AddShowTime = () => {
 
         <img
           className="rounded-base w-full h-auto mt-2"
-          src={movieDetail.image}
+          src={`${process.env.REACT_APP_API_URL}${movieDetail.image}`}
           alt="Movie Poster"
         />
 

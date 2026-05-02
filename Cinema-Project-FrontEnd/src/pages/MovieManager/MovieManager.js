@@ -65,7 +65,13 @@ const MovieManager = () => {
       dataIndex: "image",
       key: "image",
       render: (url) => {
-        return <img src={url} alt="" className="w-30 " />;
+        return (
+          <img
+            src={`${process.env.REACT_APP_API_URL}${url}`}
+            alt=""
+            className="w-30 "
+          />
+        );
       },
     },
     {

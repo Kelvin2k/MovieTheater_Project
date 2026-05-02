@@ -101,9 +101,9 @@ const EditMovie = () => {
           coming_soon: newValue.coming_soon ?? false,
           hot: newValue.hot ?? false,
           rate: newValue.rate ?? 0,
-          image: newValue.image, // file input remains empty
+          image: newValue.image,
         });
-        setImage(newValue.image);
+        setImage(`${process.env.REACT_APP_API_URL}${newValue.image}`);
       })
       .catch((err) => {
         navigate("/*");

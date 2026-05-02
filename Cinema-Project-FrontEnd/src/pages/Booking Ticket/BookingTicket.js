@@ -228,7 +228,7 @@ const BookingTicket = () => {
                     Provisional Invoice
                   </h2>
                   <img
-                    src={movieInfo.image}
+                    src={`${process.env.REACT_APP_API_URL}${movieInfo.image}`}
                     alt=""
                     className="w-3/4 h-56 lg:h-96 object-cover container mx-auto rounded-lg"
                   />

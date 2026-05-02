@@ -21,6 +21,7 @@ const AddMovie = () => {
       image: "",
     },
     onSubmit: (values, { resetForm }) => {
+      console.log(values);
       let formattedDate = values.opening_date;
       if (values.opening_date) {
         formattedDate = dayjs(values.opening_date, "DD-MM-YYYY").format(

@@ -26,7 +26,6 @@ export class MovieDto {
     description: 'Trailer URL',
     example: 'https://www.youtube.com/watch?v=YoHD9XEInc0',
   })
-  @IsUrl()
   @IsNotEmpty()
   trailer: string;
 

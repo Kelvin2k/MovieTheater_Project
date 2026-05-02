@@ -171,61 +171,6 @@ const MovieReviews = () => {
                 </Slider>
               </div>
             ) : null}
-            {/* <div>
-              <Slider {...innerSettings}>
-                {item.results?.map((review, reviewIndex) => {
-                  let imgURL = "";
-                  if (review.author_details.avatar_path) {
-                    imgURL = `https://image.tmdb.org/t/p/w185${review.author_details.avatar_path}`;
-                  } else {
-                    imgURL = "https://picsum.photos/185";
-                  }
-                  return (
-                    <div key={reviewIndex} className="px-2">
-                      <Card
-                        size="default"
-                        title={
-                          <div className="grid lg:grid-cols-2 py-3 gap-3">
-                            <img
-                              src={imgURL}
-                              alt=""
-                              className="rounded-lg w-full h-50 object-cover"
-                            />
-                            <div className="content space-y-1">
-                              <h2 className="font-bold text-base text-white">
-                                User Author:
-                              </h2>
-                              <p className="text-gray-400 text-xs">
-                                {review.author || "anonymous"}
-                              </p>
-                              <h2 className="font-bold text-base text-white">
-                                User Name:
-                              </h2>
-                              <p className="text-gray-500 text-xs ">
-                                {review.author_details.name || "anonymous"}
-                              </p>
-                              <div className="flex space-x-4">
-                                <p className="self-center font-bold text-white">
-                                  Rating:
-                                </p>
-                                <p className="rounded-full bg-amber-400 h-10 w-10 flex items-center justify-center text-white">
-                                  {review.author_details.rating || ""}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        }
-                        style={{ width: 300 }}
-                      >
-                        <p className="line-clamp-6 text-white">
-                          {review.content}
-                        </p>
-                      </Card>
-                    </div>
-                  );
-                })}
-              </Slider>
-            </div> */}
           </div>
         );
       })}

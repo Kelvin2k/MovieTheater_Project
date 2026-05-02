@@ -1,0 +1,56 @@
+name: GlobalPipeline
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+env:
+  NODE_ENV: production
+  BACKEND_PATH: ./Cinema-Project-Backend
+  FRONTEND_PATH: ./Cinema-Project-FrontEnd
+permissions:
+  contents: read
+jobs:
+  # Job check backend 
+  buildBackend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install and Build Backend
+        working-directory: ${{env.BACKEND_PATH}}
+        env:
+          DATABASE_URL: ${{secrets.DATABASE_URL}}
+          VPS_IP: ${{secrets.VPS_IP}}
+        run: 
+          yarn install
+          yarn prisma generate
+          yarn run build
+
+  # Job check FrontEnd
+  buildFrontEnd:
+    runs-on: ubuntu-latest
+    needs: [buildBackend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install and Build FrontEnd
+        working-directory: ${{env.FRONTEND_PATH}}
+        env:
+          REACT_APP_API_URL: ${{secrets.REACT_APP_API_URL}}
+        run:
+            yarn install
+            yarn run build
+
+  # Deploy project
+  deployTask:
+    needs: [buildBackend,buildFrontEnd]
+    runs-on: ubuntu-latest
+    steps:
+      - name:  Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ vars.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          script: |
+            cd /root/docker
+            docker-compose up -d

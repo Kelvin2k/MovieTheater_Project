@@ -95,7 +95,7 @@ export class MovieService {
 
     await sharp(image.buffer).webp({ quality: 75 }).toFile(outputPath);
 
-    data.image = `${process.env.VPS_IP}/${webPath}/${fileName}`;
+    data.image = `${webPath}/${fileName}`;
 
     return this.prisma.movie.create({
       data,
@@ -133,7 +133,7 @@ export class MovieService {
 
     await sharp(image.buffer).webp({ quality: 75 }).toFile(outputPath);
 
-    updateData.image = `${process.env.VPS_IP}/${webPath}/${fileName}`;
+    updateData.image = `${webPath}/${fileName}`;
 
     try {
       const updateMovie = await this.prisma.movie.update({

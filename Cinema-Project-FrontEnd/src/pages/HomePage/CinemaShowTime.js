@@ -68,7 +68,7 @@ const CinemaShowTime = ({ cinemaCode }) => {
                     return (
                       <div className="grid grid-cols-3! gap-x-5" key={index}>
                         <img
-                          src={film.image}
+                          src={`${process.env.REACT_APP_API_URL}${film.image}`}
                           alt=""
                           className="h-full w-full object-cover col-span-1 mb-4"
                         />

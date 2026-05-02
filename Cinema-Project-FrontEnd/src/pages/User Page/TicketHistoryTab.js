@@ -9,7 +9,11 @@ const TicketHistoryTab = ({ userData }) => {
         const cinemaComplexName = item.seatsList[0].cinema_complex_name;
         return (
           <div className="grid grid-cols-2 gap-5" key={index}>
-            <img src={item.image} alt="" className="w-full h-60 object-cover" />
+            <img
+              src={`${process.env.REACT_APP_API_URL}${item.image}`}
+              alt=""
+              className="w-full h-60 object-cover"
+            />
             <div className="content_left space-y-1 py-2">
               <div className="content_up space-y-1">
                 <h2 className="text-base font-bold">{cinemaSystemName}</h2>

@@ -18,15 +18,11 @@ const MovieDetail = () => {
     cinemaSchedule
       .getMovieShowTime(params.movieId)
       .then((result) => {
-        console.log(result.data.CinemaChain);
-
         setListCinema(result.data.CinemaChain);
         setMovieInfo(result.data);
         dispatch(endedLoading());
       })
-      .catch((err) => {
-        console.log("err", err);
-      });
+      .catch((err) => {});
   }, [params.movieId, dispatch]);
 
   return (
@@ -55,7 +51,7 @@ const MovieDetail = () => {
 
       <div className="content_up grid grid-cols-1 p-5 md:p-0 md:grid-cols-2 text-white my-5 gap-x-10 container mx-auto">
         <img
-          src={movieInfo.image}
+          src={`${process.env.REACT_APP_API_URL}${movieInfo.image}`}
           alt=""
           className="w-full min-h-[600px] object-cover rounded-xl"
         />

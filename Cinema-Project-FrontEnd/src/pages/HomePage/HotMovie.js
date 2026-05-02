@@ -93,7 +93,7 @@ const HotMovie = () => {
                   </div>
                 </div>
                 <img
-                  src={movie.image}
+                  src={`${process.env.REACT_APP_API_URL}${movie.image}`}
                   alt=""
                   className="h-50 w-full object-cover"
                 />
