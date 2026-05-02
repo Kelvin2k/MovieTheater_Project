@@ -5,7 +5,6 @@ on:
       - main
   workflow_dispatch:
 env:
-  NODE_ENV: production
   BACKEND_PATH: ./Cinema-Project-Backend
   FRONTEND_PATH: ./Cinema-Project-FrontEnd
 permissions:
