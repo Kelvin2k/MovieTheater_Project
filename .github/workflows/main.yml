@@ -21,7 +21,7 @@ jobs:
         env:
           DATABASE_URL: ${{secrets.DATABASE_URL}}
           VPS_IP: ${{secrets.VPS_IP}}
-        run: 
+        run: |
           yarn install
           yarn prisma generate
           yarn run build
@@ -36,7 +36,7 @@ jobs:
         working-directory: ${{env.FRONTEND_PATH}}
         env:
           REACT_APP_API_URL: ${{secrets.REACT_APP_API_URL}}
-        run:
+        run: |
             yarn install
             yarn run build
 
