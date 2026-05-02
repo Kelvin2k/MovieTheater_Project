@@ -46,7 +46,7 @@ jobs:
     steps:
       - name:  Trigger Jenkins Deploy
         run: 
-          curl -X POST "http://${{secrets.JENKINS_USER}}:${{secrets.JENKINS_API_TOKEN}}@${{secrets.JENKINS_URL}} //job/Deploy-Movie-Project/build?token=${{secrets.JENKINS_JOB_TOKEN}}"
+          curl -X POST "http://${{secrets.JENKINS_USER}}:${{secrets.JENKINS_API_TOKEN}}@${{secrets.JENKINS_URL}}//job/Deploy-Movie-Project/build?token=${{secrets.JENKINS_JOB_TOKEN}}"
 
 
 
