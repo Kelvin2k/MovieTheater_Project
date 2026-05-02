@@ -108,7 +108,7 @@ const EditMovie = () => {
       .catch((err) => {
         navigate("/*");
       });
-  }, [movieId, navigate]);
+  }, [movieId, navigate, setValues]);
 
   return (
     <div>

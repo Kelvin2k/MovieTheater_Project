@@ -49,13 +49,8 @@ const BookingTicket = () => {
       })
       .catch((err) => {
         const errMsg =
-          err?.response?.data?.message ||
-          "Failed to book ticket! Please try again.";
-        openNotificationWithIcon(
-          "error",
-          "Booking failed!",
-          "There is an error when booking!",
-        );
+          err?.response?.data || "Failed to book ticket! Please try again.";
+        openNotificationWithIcon("error", "Booking failed!", errMsg);
       });
   };
   const handleCancel = () => {

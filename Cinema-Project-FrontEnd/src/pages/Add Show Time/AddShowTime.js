@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { filmServManagement } from "../../services/filmServManagement";
 import dayjs from "dayjs";
@@ -16,12 +16,15 @@ const AddShowTime = () => {
   const navigate = useNavigate();
 
   const [api, contextHolder] = notification.useNotification();
-  const openNotificationWithIcon = (type, title = "", description = "") => {
-    api[type]({
-      title: title,
-      description: description,
-    });
-  };
+  const openNotificationWithIcon = useCallback(
+    (type, title = "", description = "") => {
+      api[type]({
+        title: title,
+        description: description,
+      });
+    },
+    [api],
+  );
   useEffect(() => {
     filmServManagement
       .getMovieInfo(movieId)
@@ -32,7 +35,7 @@ const AddShowTime = () => {
         const errMsg = err?.response?.data || "Error happens";
         openNotificationWithIcon("error", "Scheduling Failed", errMsg);
       });
-  }, [movieId]);
+  }, [movieId, openNotificationWithIcon]);
 
   const formik = useFormik({
     initialValues: {
@@ -93,7 +96,7 @@ const AddShowTime = () => {
     } else {
       setClusterList([]);
     }
-  }, [values.cinema_chain_id]);
+  }, [values.cinema_chain_id, openNotificationWithIcon]);
 
   useEffect(() => {
     if (values.cinema_complex_id) {
@@ -111,7 +114,7 @@ const AddShowTime = () => {
     } else {
       setCinemaList([]);
     }
-  }, [values.cinema_complex_id]);
+  }, [values.cinema_complex_id, openNotificationWithIcon]);
 
   values.movie_id = movieId;
 
