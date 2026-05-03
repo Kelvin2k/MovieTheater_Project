@@ -48,8 +48,11 @@ const BookingTicket = () => {
           .catch((err) => {});
       })
       .catch((err) => {
+        console.log(err);
+
         const errMsg =
-          err?.response?.data || "Failed to book ticket! Please try again.";
+          err?.response?.data?.message ||
+          "Failed to book ticket! Please try again.";
         openNotificationWithIcon("error", "Booking failed!", errMsg);
       });
   };

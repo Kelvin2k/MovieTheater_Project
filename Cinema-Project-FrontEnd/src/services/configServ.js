@@ -40,3 +40,4 @@ export const adminHttps = axios.create({
 adminHttps.interceptors.response.use(function (response) {
   return response.data;
 });
+

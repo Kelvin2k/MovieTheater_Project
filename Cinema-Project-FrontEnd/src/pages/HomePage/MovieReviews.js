@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { reviewServ } from "../../services/reviewServ";
+import { movieDBServ } from "../../services/movieDBServ";
 import "./MovieReview.css";
 
 const MovieReviews = () => {
@@ -40,15 +40,13 @@ const MovieReviews = () => {
   useEffect(() => {
     (async () => {
       try {
-        const popularMovie = await reviewServ.fetchPopularData();
+        const popularMovie = await movieDBServ.fetchPopularData();
         const listHotMovie = popularMovie.results.slice(4, 6);
         setListHotMovie(listHotMovie);
 
         const listFilmReview = [];
         for (const movie of listHotMovie) {
-          const reviews = await reviewServ.fetchUserReviewBasedOnFilmId(
-            movie.id,
-          );
+          const reviews = await movieDBServ.fetchUserReviewBasedOnFilmId(movie.id);
           listFilmReview.push({
             ...reviews,
             poster_path: movie.poster_path,

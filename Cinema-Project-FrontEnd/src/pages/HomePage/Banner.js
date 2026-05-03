@@ -1,6 +1,6 @@
 import { Carousel } from "antd";
 import React, { useEffect, useState } from "react";
-import { filmServManagement } from "../../services/filmServManagement";
+import { movieDBServ } from "../../services/movieDBServ";
 
 const Banner = () => {
   const [listBanner, setListBanner] = useState([]);
@@ -35,12 +35,11 @@ const Banner = () => {
   };
 
   useEffect(() => {
-    // dispatch(startedLoading());
-
     const fetchBanners = async () => {
       try {
-        const data = await filmServManagement.getAllBanner();
-        setListBanner(data.data);
+        const data = await movieDBServ.fetchMovieBanner();
+
+        setListBanner(data.results);
       } catch (error) {}
     };
     fetchBanners();
@@ -52,7 +51,7 @@ const Banner = () => {
         return (
           <div key={item.banner_id} className="w-screen">
             <img
-              src={item.image}
+              src={`https://image.tmdb.org/t/p/original${item.backdrop_path}`}
               alt=""
               className="w-full overflow-hidden h-60 sm:h-80! md:h-175! object-cover"
             />
