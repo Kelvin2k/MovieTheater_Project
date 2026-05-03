@@ -143,6 +143,13 @@ Do not commit real tokens or secrets to the repository.
 
 Open in browser: http://localhost:8088/swagger
 
+### Swagger Authorization Notes
+
+- The backend provides a quick admin token at `GET /auth/create-token`.
+- In Swagger UI, click Authorize and paste the token as a Bearer token.
+- Some admin endpoints also expect a `Token` header; you can reuse the same token when testing.
+- User login at `POST /user/user-login/` returns a user token that can be used for user-protected routes.
+
 ## Notes and Troubleshooting
 
 - If DB connection fails, verify DATABASE_URL and the MySQL host/port. For Docker use mysql_db:3306; for local MySQL use localhost:3306 (or your custom port).
