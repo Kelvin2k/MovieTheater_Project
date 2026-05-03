@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import dayjs from 'dayjs';
@@ -28,6 +28,11 @@ export class TokenService {
     return token;
   }
   async validateToken(token: string): Promise<any> {
+    if (!token) {
+      throw new UnauthorizedException(
+        'You have to log in to perform this action',
+      );
+    }
     const validate = this.jwtService.decode(token);
 
     return validate;
