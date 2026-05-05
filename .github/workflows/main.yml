@@ -48,9 +48,11 @@ jobs:
           username: ${{ vars.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
           script: |
-            cd /root/docker
+            cd /root/MovieTheater_Project && git pull
+            docker-compose down
+            docker-compose build
             docker-compose up -d
-            
+
   # Deploy project
   
   # triggerJenkins:
