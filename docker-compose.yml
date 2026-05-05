@@ -3,7 +3,8 @@ version: "3.8"
 services:
   frontend:
     container_name: movie-project-frontend
-    build: ./Cinema-Project-FrontEnd
+    image: kelvin2kk/cinema-frontend:latest
+    restart: always
     ports:
       - 3000:80
     networks:
@@ -26,8 +27,9 @@ services:
   node:
     depends_on:
       - mysql_db
-    build: ./Cinema-Project-Backend
     container_name: movie-project-backend
+    image: kelvin2kk/cinema-backend:latest
+    restart: always
     env_file:
       - ./Cinema-Project-Backend/.env
     ports:
