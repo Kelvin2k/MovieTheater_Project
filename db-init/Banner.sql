@@ -1,10 +1,10 @@
 -- -------------------------------------------------------------
--- TablePlus 6.8.6(662)
+-- TablePlus 6.9.0(668)
 --
 -- https://tableplus.com/
 --
 -- Database: db_clone_capstone_movie
--- Generation Time: 2026-05-02 17:58:14.4590
+-- Generation Time: 2026-05-05 15:23:33.7340
 -- -------------------------------------------------------------
 
 
@@ -35,14 +35,18 @@ CREATE TABLE `Booking` (
   `showtimes_id` int NOT NULL,
   `seat_id` int NOT NULL,
   `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `status` varchar(20) DEFAULT 'HELD',
+  `hold_until` datetime DEFAULT NULL,
+  `version` int DEFAULT '1',
   PRIMARY KEY (`ticket_id`),
-  UNIQUE KEY `unique_booking` (`account_id`,`showtimes_id`,`seat_id`),
+  UNIQUE KEY `unique_seat_showtime` (`showtimes_id`,`seat_id`),
   KEY `showtimes_id` (`showtimes_id`),
   KEY `seat_id` (`seat_id`),
+  KEY `Booking_ibfk_1` (`account_id`),
   CONSTRAINT `Booking_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `User` (`account_id`) ON DELETE CASCADE,
   CONSTRAINT `Booking_ibfk_2` FOREIGN KEY (`showtimes_id`) REFERENCES `ShowTimes` (`showtimes_id`) ON DELETE CASCADE,
   CONSTRAINT `Booking_ibfk_3` FOREIGN KEY (`seat_id`) REFERENCES `Seat` (`seat_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `Cinema`;
 CREATE TABLE `Cinema` (
@@ -140,52 +144,57 @@ INSERT INTO `Banner` (`banner_id`, `movie_id`, `image`) VALUES
 (9, 9, 'https://attractionsmagazine.com/wp-content/uploads/2024/10/Joker-2-courtesy-of-Warner-Bros.jpeg'),
 (10, 10, 'https://image.tmdb.org/t/p/original/14QbnygCuTO0vl7CAFmPf1fgZfV.jpg');
 
-INSERT INTO `Booking` (`ticket_id`, `account_id`, `showtimes_id`, `seat_id`, `date`) VALUES
-(1, 2, 1, 1, NULL),
-(2, 2, 1, 2, NULL),
-(3, 2, 1, 121, NULL),
-(4, 2, 1, 122, NULL),
-(5, 4, 1, 3, NULL),
-(6, 4, 1, 4, NULL),
-(7, 6, 1, 14, NULL),
-(8, 6, 1, 15, NULL),
-(9, 6, 1, 22, NULL),
-(10, 6, 1, 23, NULL),
-(11, 6, 1, 24, NULL),
-(12, 6, 1, 32, NULL),
-(13, 6, 1, 94, NULL),
-(14, 6, 1, 95, NULL),
-(15, 6, 1, 109, NULL),
-(16, 6, 1, 116, NULL),
-(17, 6, 1, 119, NULL),
-(18, 6, 1, 125, NULL),
-(19, 6, 1, 127, NULL),
-(20, 6, 1, 131, NULL),
-(21, 6, 1, 132, NULL),
-(22, 6, 1, 133, NULL),
-(23, 6, 1, 134, NULL),
-(24, 6, 1, 135, NULL),
-(25, 6, 1, 136, NULL),
-(26, 6, 1, 140, NULL),
-(27, 6, 1, 141, NULL),
-(28, 6, 1, 142, NULL),
-(29, 6, 1, 147, NULL),
-(30, 6, 1, 150, NULL),
-(31, 6, 1, 152, NULL),
-(32, 6, 1, 157, NULL),
-(33, 6, 1, 160, NULL),
-(34, 6, 2, 16, NULL),
-(35, 6, 2, 17, NULL),
-(36, 6, 2, 18, NULL),
-(37, 6, 2, 19, NULL),
-(38, 6, 2, 20, NULL),
-(39, 6, 2, 21, NULL),
-(40, 6, 2, 22, NULL),
-(41, 6, 3, 96, NULL),
-(42, 6, 3, 100, NULL),
-(43, 6, 3, 160, NULL),
-(44, 6, 4, 112, '2026-04-22 10:00:20'),
-(45, 6, 19, 96, '2026-04-25 08:36:35');
+INSERT INTO `Booking` (`ticket_id`, `account_id`, `showtimes_id`, `seat_id`, `date`, `status`, `hold_until`, `version`) VALUES
+(1, 2, 1, 1, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(2, 2, 1, 2, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(3, 2, 1, 121, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(4, 2, 1, 122, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(5, 4, 1, 3, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(6, 4, 1, 4, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(7, 6, 1, 14, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(8, 6, 1, 15, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(9, 6, 1, 22, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(10, 6, 1, 23, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(11, 6, 1, 24, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(12, 6, 1, 32, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(13, 6, 1, 94, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(14, 6, 1, 95, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(15, 6, 1, 109, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(16, 6, 1, 116, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(17, 6, 1, 119, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(18, 6, 1, 125, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(19, 6, 1, 127, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(20, 6, 1, 131, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(21, 6, 1, 132, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(22, 6, 1, 133, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(23, 6, 1, 134, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(24, 6, 1, 135, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(25, 6, 1, 136, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(26, 6, 1, 140, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(27, 6, 1, 141, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(28, 6, 1, 142, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(29, 6, 1, 147, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(30, 6, 1, 150, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(31, 6, 1, 152, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(32, 6, 1, 157, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(33, 6, 1, 160, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(34, 6, 2, 16, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(35, 6, 2, 17, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(36, 6, 2, 18, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(37, 6, 2, 19, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(38, 6, 2, 20, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(39, 6, 2, 21, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(40, 6, 2, 22, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(41, 6, 3, 96, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(42, 6, 3, 100, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(43, 6, 3, 160, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(44, 6, 4, 112, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(45, 6, 19, 96, '2026-05-05 04:19:09', 'BOOKED', NULL, 1),
+(46, 6, 2, 120, '2026-05-05 04:19:09', 'BOOKED', NULL, 2),
+(47, 6, 19, 88, '2026-05-05 04:39:24', 'HELD', '2026-05-05 04:44:24', 1),
+(48, 6, 19, 95, '2026-05-05 04:41:56', 'HELD', '2026-05-05 04:46:56', 1),
+(49, 6, 19, 103, '2026-05-05 04:45:48', 'HELD', '2026-05-05 04:50:48', 1),
+(50, 6, 3, 110, '2026-05-05 04:48:37', 'HELD', '2026-05-05 04:53:37', 1);
 
 INSERT INTO `Cinema` (`cinema_id`, `cinema_name`, `cinema_complex_id`) VALUES
 (1, 'Xtremescreen 1', 1),
