@@ -10,36 +10,29 @@ env:
 permissions:
   contents: read
 jobs:
-  # Job check backend 
   buildBackend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install and Build Backend
         working-directory: ${{env.BACKEND_PATH}}
-        env:
-          DATABASE_URL: ${{secrets.DATABASE_URL}}
-          VPS_IP: ${{secrets.VPS_IP}}
         run: |
           yarn install
           yarn prisma generate
           yarn run build
 
-  # Job check FrontEnd
   buildFrontEnd:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install and Build FrontEnd
         working-directory: ${{env.FRONTEND_PATH}}
-        env:
-          REACT_APP_API_URL: ${{secrets.REACT_APP_API_URL}}
         run: |
-            yarn install
-            yarn run build
+          yarn install
+          yarn run build
 
   buildAndPush:
-    needs: [buildFrontEnd,buildBackend]
+    needs: [buildFrontEnd, buildBackend]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -63,6 +56,11 @@ jobs:
           context: ./Cinema-Project-FrontEnd
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/cinema-frontend:latest
+          build-args: |
+            REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}
+            REACT_APP_AUTHORIZATION_TOKEN=${{ secrets.REACT_APP_AUTHORIZATION_TOKEN }}
+            REACT_APP_TOKEN_BACKEND=${{ secrets.REACT_APP_TOKEN_BACKEND }}
+            REACT_APP_THE_MOVIEDB_AUTHORIZATION_TOKEN=${{ secrets.REACT_APP_THE_MOVIEDB_AUTHORIZATION_TOKEN }}
 
   deployProject:
     needs: [buildAndPush]
