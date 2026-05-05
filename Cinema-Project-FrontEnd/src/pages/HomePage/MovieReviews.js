@@ -62,7 +62,7 @@ const MovieReviews = () => {
   return (
     <div className="my-10 space-y-8 overflow-x-hidden" id="new_release">
       <h2 className="text-3xl md:text-5xl text-center font-bold uppercase text-red-500">
-        New Release
+        New Releases
       </h2>
       {listReviews?.map((item, index) => {
         const newListHotMovie = listHotMovie.filter(
