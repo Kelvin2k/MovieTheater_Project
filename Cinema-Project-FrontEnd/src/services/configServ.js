@@ -15,7 +15,7 @@ export const https = axios.create({
 axios.interceptors.request.use(
   function (config) {
     if (dataUser) {
-      config.headers.Authorization = getLocalStorage("userInfo").accessToken;
+      config.headers.Authorization = getLocalStorage("userInfo").token;
     }
     return config;
   },
@@ -40,4 +40,3 @@ export const adminHttps = axios.create({
 adminHttps.interceptors.response.use(function (response) {
   return response.data;
 });
-

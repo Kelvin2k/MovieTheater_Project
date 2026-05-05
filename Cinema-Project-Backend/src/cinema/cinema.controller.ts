@@ -27,16 +27,16 @@ export class CinemaController {
     return this.cinemaService.getCinemaComplexInfo(+cinema_chain_id);
   }
 
-  //Get showtimes based on cinema complex name
+  //Get showtimes based on cinema complex Id
   @Get('/get-showtimes-info-on-cinema-chain-id')
   @ApiQuery({ name: 'CinemaChainId', required: false, type: Number })
   async getShowTimesInfoOnCinemaChainId(
-    @Query('CinemaComplexId') cinema_chain_id: number,
+    @Query('CinemaChainId') cinema_chain_id: number,
   ): Promise<any> {
     return this.cinemaService.getShowTimesInfoOnCinemaChainId(+cinema_chain_id);
   }
 
-  //Get showtimes based on movie name
+  //Get showtimes based on movie Id
   @Get('/get-showtimes-info-on-movie-id')
   @ApiQuery({ name: 'MovieId', required: false, type: Number })
   async getShowTimesInfoOnMovieId(
@@ -56,3 +56,5 @@ export class CinemaController {
     );
   }
 }
+
+

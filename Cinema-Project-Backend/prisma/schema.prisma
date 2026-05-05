@@ -94,13 +94,17 @@ model Booking {
   showtimes_id Int
   seat_id      Int
   date         DateTime? @default(now()) @db.DateTime(0)
+  status       String?   @default("HELD") @db.VarChar(20)
+  hold_until   DateTime? @db.DateTime(0)
+  version      Int?      @default(1)
   User         User      @relation(fields: [account_id], references: [account_id], onDelete: Cascade, onUpdate: NoAction, map: "Booking_ibfk_1")
   ShowTimes    ShowTimes @relation(fields: [showtimes_id], references: [showtimes_id], onDelete: Cascade, onUpdate: NoAction, map: "Booking_ibfk_2")
   Seat         Seat      @relation(fields: [seat_id], references: [seat_id], onDelete: Cascade, onUpdate: NoAction, map: "Booking_ibfk_3")
 
-  @@unique([account_id, showtimes_id, seat_id], map: "unique_booking")
+  @@unique([showtimes_id, seat_id], map: "unique_seat_showtime")
   @@index([seat_id], map: "seat_id")
   @@index([showtimes_id], map: "showtimes_id")
+  @@index([account_id], map: "Booking_ibfk_1")
 }
 
 model User {

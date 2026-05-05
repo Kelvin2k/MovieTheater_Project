@@ -1125,7 +1125,10 @@ export const BookingScalarFieldEnum = {
   account_id: 'account_id',
   showtimes_id: 'showtimes_id',
   seat_id: 'seat_id',
-  date: 'date'
+  date: 'date',
+  status: 'status',
+  hold_until: 'hold_until',
+  version: 'version'
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
@@ -1205,6 +1208,13 @@ export const SeatOrderByRelevanceFieldEnum = {
 } as const
 
 export type SeatOrderByRelevanceFieldEnum = (typeof SeatOrderByRelevanceFieldEnum)[keyof typeof SeatOrderByRelevanceFieldEnum]
+
+
+export const BookingOrderByRelevanceFieldEnum = {
+  status: 'status'
+} as const
+
+export type BookingOrderByRelevanceFieldEnum = (typeof BookingOrderByRelevanceFieldEnum)[keyof typeof BookingOrderByRelevanceFieldEnum]
 
 
 export const UserOrderByRelevanceFieldEnum = {

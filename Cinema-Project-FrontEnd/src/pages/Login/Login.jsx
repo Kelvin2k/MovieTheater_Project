@@ -49,8 +49,9 @@ const Login = () => {
           }, 2000);
         })
         .catch((err) => {
-
-          const errMsg = err || "Failed to login user! Please try again.";
+          const errMsg =
+            err.response?.data?.message ||
+            "Failed to login user! Please try again.";
           openNotificationWithIcon("error", "Log In Failed!", errMsg);
         });
 

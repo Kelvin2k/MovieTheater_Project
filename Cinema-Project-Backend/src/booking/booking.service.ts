@@ -13,50 +13,32 @@ export class BookingService {
   //Booking Ticket
   async bookingTicket(data: BookingTicketDto, user: any): Promise<any> {
     const { account_id } = user.data;
-
-
     const seatArr = data.ticket_list.map((item) => item.seat_id);
-    const isExistBooking = await this.prisma.booking.findMany({
+    const now = new Date();
+
+    const confirmBooking = await this.prisma.booking.updateMany({
       where: {
         showtimes_id: data.showtimes_id,
         seat_id: { in: seatArr },
+        account_id: account_id,
+        status: 'HELD',
+        hold_until: { gt: now },
+      },
+      data: {
+        status: 'BOOKED',
+        hold_until: null,
+        date: new Date(),
+        version: { increment: 1 },
       },
     });
-    if (isExistBooking.length > 0)
-      throw new BadRequestException('Seats already taken!');
 
-    const finalData = data.ticket_list.map((item) => ({
-      account_id,
-      showtimes_id: data.showtimes_id,
-      seat_id: item.seat_id,
-    }));
+    if (confirmBooking.count !== seatArr.length) {
+      throw new BadRequestException(
+        'Checkout failed. Session expired or invalid seats.',
+      );
+    }
 
-    const showTimesInfo = await this.prisma.showTimes.findUnique({
-      where: {
-        showtimes_id: data.showtimes_id,
-      },
-      include: {
-        Movie: true,
-        Cinema: {
-          include: {
-            CinemaComplex: {
-              include: {
-                CinemaChain: true,
-              },
-            },
-            Seat: true,
-          },
-        },
-      },
-    });
-    if (!showTimesInfo) throw new Error('Can not find this show time!');
-
-    const bookingTicket = await this.prisma.booking.createMany({
-      data: finalData,
-      skipDuplicates: true,
-    });
-    if (bookingTicket) return 'Book Ticket Successfully';
-    throw new Error('Bad Request!');
+    return true;
   }
 
   // fetch show time ticket
@@ -130,11 +112,88 @@ export class BookingService {
 
   // Create Show Time
   async createShowTime(data: CreateShowTimeDto): Promise<ShowTimes> {
-    // const formatDateTime = dayjs(data.screening_time).format(
-    //   'DD/MM/YYYY HH:mm:ss',
-    // );
     return this.prisma.showTimes.create({
       data,
     });
+  }
+
+  // Held Booking Seat
+  async heldBookingSeat(
+    showtimes_id: number,
+    seat_id: number,
+    account_id: number,
+  ): Promise<any> {
+    const holdDuration = 5 * 60 * 1000;
+    const expirationDate = new Date(Date.now() + holdDuration);
+
+    // 1. Check if this seat already exists in the database
+    const existingBooking = await this.prisma.booking.findFirst({
+      where: { showtimes_id, seat_id },
+    });
+
+    // Case 1: The seat is completely empty (No one has clicked yet)
+    if (!existingBooking) {
+      try {
+        const newHold = await this.prisma.booking.create({
+          data: {
+            showtimes_id,
+            seat_id,
+            account_id,
+            status: 'HELD',
+            hold_until: expirationDate,
+            version: 1,
+          },
+        });
+        return { message: 'Hold seat successfully!', data: newHold };
+      } catch (error) {
+        // Race Condition Handling
+        throw new BadRequestException(
+          'This seat has been selected by other customer',
+        );
+      }
+    }
+
+    // Case 2: seat has been sell
+    if (existingBooking.status === 'BOOKED') {
+      throw new BadRequestException('This seat has been purchased!');
+    }
+
+    // Case 3: Seat is held
+    if (existingBooking.status === 'HELD') {
+      const now = new Date();
+      const holdUntil = existingBooking.hold_until;
+
+      // 3A. If the seat is still being held (hold time not expired)
+      if (holdUntil !== null && holdUntil > now) {
+        // If the same user clicks again on the seat they are holding
+        if (existingBooking.account_id === account_id) {
+          return { message: 'You are holding this seat!' };
+        }
+        throw new BadRequestException(
+          'This seat is being processed for payment, please choose another one!',
+        );
+      }
+
+      // 3B. If the hold time has expired (hold_until < now) -> Steal the seat (OCC)
+      const stealSeat = await this.prisma.booking.updateMany({
+        where: {
+          showtimes_id,
+          seat_id,
+          status: 'HELD',
+          version: existingBooking.version,
+        },
+        data: {
+          account_id,
+          hold_until: expirationDate,
+          version: { increment: 1 },
+        },
+      });
+
+      if (stealSeat.count === 0) {
+        throw new BadRequestException('Seat has been selected!');
+      }
+
+      return true;
+    }
   }
 }

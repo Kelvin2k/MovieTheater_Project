@@ -14,6 +14,11 @@ export const cinemaSchedule = {
       `/booking/get-show-time-ticket?ShowTimeId=${showTimeCode}`,
     );
   },
+
+  bookOnHold: (data) => {
+    return https.post(`/booking/hold-seat`, data);
+  },
+
   bookTicket: (data) => {
     return https.post("/booking/booking-ticket", data);
   },

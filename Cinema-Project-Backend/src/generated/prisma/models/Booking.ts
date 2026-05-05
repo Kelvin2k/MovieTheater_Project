@@ -31,6 +31,7 @@ export type BookingAvgAggregateOutputType = {
   account_id: number | null
   showtimes_id: number | null
   seat_id: number | null
+  version: number | null
 }
 
 export type BookingSumAggregateOutputType = {
@@ -38,6 +39,7 @@ export type BookingSumAggregateOutputType = {
   account_id: number | null
   showtimes_id: number | null
   seat_id: number | null
+  version: number | null
 }
 
 export type BookingMinAggregateOutputType = {
@@ -46,6 +48,9 @@ export type BookingMinAggregateOutputType = {
   showtimes_id: number | null
   seat_id: number | null
   date: Date | null
+  status: string | null
+  hold_until: Date | null
+  version: number | null
 }
 
 export type BookingMaxAggregateOutputType = {
@@ -54,6 +59,9 @@ export type BookingMaxAggregateOutputType = {
   showtimes_id: number | null
   seat_id: number | null
   date: Date | null
+  status: string | null
+  hold_until: Date | null
+  version: number | null
 }
 
 export type BookingCountAggregateOutputType = {
@@ -62,6 +70,9 @@ export type BookingCountAggregateOutputType = {
   showtimes_id: number
   seat_id: number
   date: number
+  status: number
+  hold_until: number
+  version: number
   _all: number
 }
 
@@ -71,6 +82,7 @@ export type BookingAvgAggregateInputType = {
   account_id?: true
   showtimes_id?: true
   seat_id?: true
+  version?: true
 }
 
 export type BookingSumAggregateInputType = {
@@ -78,6 +90,7 @@ export type BookingSumAggregateInputType = {
   account_id?: true
   showtimes_id?: true
   seat_id?: true
+  version?: true
 }
 
 export type BookingMinAggregateInputType = {
@@ -86,6 +99,9 @@ export type BookingMinAggregateInputType = {
   showtimes_id?: true
   seat_id?: true
   date?: true
+  status?: true
+  hold_until?: true
+  version?: true
 }
 
 export type BookingMaxAggregateInputType = {
@@ -94,6 +110,9 @@ export type BookingMaxAggregateInputType = {
   showtimes_id?: true
   seat_id?: true
   date?: true
+  status?: true
+  hold_until?: true
+  version?: true
 }
 
 export type BookingCountAggregateInputType = {
@@ -102,6 +121,9 @@ export type BookingCountAggregateInputType = {
   showtimes_id?: true
   seat_id?: true
   date?: true
+  status?: true
+  hold_until?: true
+  version?: true
   _all?: true
 }
 
@@ -197,6 +219,9 @@ export type BookingGroupByOutputType = {
   showtimes_id: number
   seat_id: number
   date: Date | null
+  status: string | null
+  hold_until: Date | null
+  version: number | null
   _count: BookingCountAggregateOutputType | null
   _avg: BookingAvgAggregateOutputType | null
   _sum: BookingSumAggregateOutputType | null
@@ -228,6 +253,9 @@ export type BookingWhereInput = {
   showtimes_id?: Prisma.IntFilter<"Booking"> | number
   seat_id?: Prisma.IntFilter<"Booking"> | number
   date?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  status?: Prisma.StringNullableFilter<"Booking"> | string | null
+  hold_until?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  version?: Prisma.IntNullableFilter<"Booking"> | number | null
   User?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   ShowTimes?: Prisma.XOR<Prisma.ShowTimesScalarRelationFilter, Prisma.ShowTimesWhereInput>
   Seat?: Prisma.XOR<Prisma.SeatScalarRelationFilter, Prisma.SeatWhereInput>
@@ -239,14 +267,18 @@ export type BookingOrderByWithRelationInput = {
   showtimes_id?: Prisma.SortOrder
   seat_id?: Prisma.SortOrder
   date?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrderInput | Prisma.SortOrder
+  hold_until?: Prisma.SortOrderInput | Prisma.SortOrder
+  version?: Prisma.SortOrderInput | Prisma.SortOrder
   User?: Prisma.UserOrderByWithRelationInput
   ShowTimes?: Prisma.ShowTimesOrderByWithRelationInput
   Seat?: Prisma.SeatOrderByWithRelationInput
+  _relevance?: Prisma.BookingOrderByRelevanceInput
 }
 
 export type BookingWhereUniqueInput = Prisma.AtLeast<{
   ticket_id?: number
-  account_id_showtimes_id_seat_id?: Prisma.BookingAccount_idShowtimes_idSeat_idCompoundUniqueInput
+  showtimes_id_seat_id?: Prisma.BookingShowtimes_idSeat_idCompoundUniqueInput
   AND?: Prisma.BookingWhereInput | Prisma.BookingWhereInput[]
   OR?: Prisma.BookingWhereInput[]
   NOT?: Prisma.BookingWhereInput | Prisma.BookingWhereInput[]
@@ -254,10 +286,13 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   showtimes_id?: Prisma.IntFilter<"Booking"> | number
   seat_id?: Prisma.IntFilter<"Booking"> | number
   date?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  status?: Prisma.StringNullableFilter<"Booking"> | string | null
+  hold_until?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  version?: Prisma.IntNullableFilter<"Booking"> | number | null
   User?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   ShowTimes?: Prisma.XOR<Prisma.ShowTimesScalarRelationFilter, Prisma.ShowTimesWhereInput>
   Seat?: Prisma.XOR<Prisma.SeatScalarRelationFilter, Prisma.SeatWhereInput>
-}, "ticket_id" | "account_id_showtimes_id_seat_id">
+}, "ticket_id" | "showtimes_id_seat_id">
 
 export type BookingOrderByWithAggregationInput = {
   ticket_id?: Prisma.SortOrder
@@ -265,6 +300,9 @@ export type BookingOrderByWithAggregationInput = {
   showtimes_id?: Prisma.SortOrder
   seat_id?: Prisma.SortOrder
   date?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrderInput | Prisma.SortOrder
+  hold_until?: Prisma.SortOrderInput | Prisma.SortOrder
+  version?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.BookingCountOrderByAggregateInput
   _avg?: Prisma.BookingAvgOrderByAggregateInput
   _max?: Prisma.BookingMaxOrderByAggregateInput
@@ -281,10 +319,16 @@ export type BookingScalarWhereWithAggregatesInput = {
   showtimes_id?: Prisma.IntWithAggregatesFilter<"Booking"> | number
   seat_id?: Prisma.IntWithAggregatesFilter<"Booking"> | number
   date?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
+  status?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
+  hold_until?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
+  version?: Prisma.IntNullableWithAggregatesFilter<"Booking"> | number | null
 }
 
 export type BookingCreateInput = {
   date?: Date | string | null
+  status?: string | null
+  hold_until?: Date | string | null
+  version?: number | null
   User: Prisma.UserCreateNestedOneWithoutBookingInput
   ShowTimes: Prisma.ShowTimesCreateNestedOneWithoutBookingInput
   Seat: Prisma.SeatCreateNestedOneWithoutBookingInput
@@ -296,10 +340,16 @@ export type BookingUncheckedCreateInput = {
   showtimes_id: number
   seat_id: number
   date?: Date | string | null
+  status?: string | null
+  hold_until?: Date | string | null
+  version?: number | null
 }
 
 export type BookingUpdateInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hold_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   User?: Prisma.UserUpdateOneRequiredWithoutBookingNestedInput
   ShowTimes?: Prisma.ShowTimesUpdateOneRequiredWithoutBookingNestedInput
   Seat?: Prisma.SeatUpdateOneRequiredWithoutBookingNestedInput
@@ -311,6 +361,9 @@ export type BookingUncheckedUpdateInput = {
   showtimes_id?: Prisma.IntFieldUpdateOperationsInput | number
   seat_id?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hold_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type BookingCreateManyInput = {
@@ -319,10 +372,16 @@ export type BookingCreateManyInput = {
   showtimes_id: number
   seat_id: number
   date?: Date | string | null
+  status?: string | null
+  hold_until?: Date | string | null
+  version?: number | null
 }
 
 export type BookingUpdateManyMutationInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hold_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type BookingUncheckedUpdateManyInput = {
@@ -331,6 +390,9 @@ export type BookingUncheckedUpdateManyInput = {
   showtimes_id?: Prisma.IntFieldUpdateOperationsInput | number
   seat_id?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hold_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type BookingListRelationFilter = {
@@ -343,8 +405,13 @@ export type BookingOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type BookingAccount_idShowtimes_idSeat_idCompoundUniqueInput = {
-  account_id: number
+export type BookingOrderByRelevanceInput = {
+  fields: Prisma.BookingOrderByRelevanceFieldEnum | Prisma.BookingOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
+}
+
+export type BookingShowtimes_idSeat_idCompoundUniqueInput = {
   showtimes_id: number
   seat_id: number
 }
@@ -355,6 +422,9 @@ export type BookingCountOrderByAggregateInput = {
   showtimes_id?: Prisma.SortOrder
   seat_id?: Prisma.SortOrder
   date?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  hold_until?: Prisma.SortOrder
+  version?: Prisma.SortOrder
 }
 
 export type BookingAvgOrderByAggregateInput = {
@@ -362,6 +432,7 @@ export type BookingAvgOrderByAggregateInput = {
   account_id?: Prisma.SortOrder
   showtimes_id?: Prisma.SortOrder
   seat_id?: Prisma.SortOrder
+  version?: Prisma.SortOrder
 }
 
 export type BookingMaxOrderByAggregateInput = {
@@ -370,6 +441,9 @@ export type BookingMaxOrderByAggregateInput = {
   showtimes_id?: Prisma.SortOrder
   seat_id?: Prisma.SortOrder
   date?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  hold_until?: Prisma.SortOrder
+  version?: Prisma.SortOrder
 }
 
 export type BookingMinOrderByAggregateInput = {
@@ -378,6 +452,9 @@ export type BookingMinOrderByAggregateInput = {
   showtimes_id?: Prisma.SortOrder
   seat_id?: Prisma.SortOrder
   date?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  hold_until?: Prisma.SortOrder
+  version?: Prisma.SortOrder
 }
 
 export type BookingSumOrderByAggregateInput = {
@@ -385,6 +462,7 @@ export type BookingSumOrderByAggregateInput = {
   account_id?: Prisma.SortOrder
   showtimes_id?: Prisma.SortOrder
   seat_id?: Prisma.SortOrder
+  version?: Prisma.SortOrder
 }
 
 export type BookingCreateNestedManyWithoutSeatInput = {
@@ -519,6 +597,9 @@ export type BookingUncheckedUpdateManyWithoutUserNestedInput = {
 
 export type BookingCreateWithoutSeatInput = {
   date?: Date | string | null
+  status?: string | null
+  hold_until?: Date | string | null
+  version?: number | null
   User: Prisma.UserCreateNestedOneWithoutBookingInput
   ShowTimes: Prisma.ShowTimesCreateNestedOneWithoutBookingInput
 }
@@ -528,6 +609,9 @@ export type BookingUncheckedCreateWithoutSeatInput = {
   account_id: number
   showtimes_id: number
   date?: Date | string | null
+  status?: string | null
+  hold_until?: Date | string | null
+  version?: number | null
 }
 
 export type BookingCreateOrConnectWithoutSeatInput = {
@@ -565,10 +649,16 @@ export type BookingScalarWhereInput = {
   showtimes_id?: Prisma.IntFilter<"Booking"> | number
   seat_id?: Prisma.IntFilter<"Booking"> | number
   date?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  status?: Prisma.StringNullableFilter<"Booking"> | string | null
+  hold_until?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  version?: Prisma.IntNullableFilter<"Booking"> | number | null
 }
 
 export type BookingCreateWithoutShowTimesInput = {
   date?: Date | string | null
+  status?: string | null
+  hold_until?: Date | string | null
+  version?: number | null
   User: Prisma.UserCreateNestedOneWithoutBookingInput
   Seat: Prisma.SeatCreateNestedOneWithoutBookingInput
 }
@@ -578,6 +668,9 @@ export type BookingUncheckedCreateWithoutShowTimesInput = {
   account_id: number
   seat_id: number
   date?: Date | string | null
+  status?: string | null
+  hold_until?: Date | string | null
+  version?: number | null
 }
 
 export type BookingCreateOrConnectWithoutShowTimesInput = {
@@ -608,6 +701,9 @@ export type BookingUpdateManyWithWhereWithoutShowTimesInput = {
 
 export type BookingCreateWithoutUserInput = {
   date?: Date | string | null
+  status?: string | null
+  hold_until?: Date | string | null
+  version?: number | null
   ShowTimes: Prisma.ShowTimesCreateNestedOneWithoutBookingInput
   Seat: Prisma.SeatCreateNestedOneWithoutBookingInput
 }
@@ -617,6 +713,9 @@ export type BookingUncheckedCreateWithoutUserInput = {
   showtimes_id: number
   seat_id: number
   date?: Date | string | null
+  status?: string | null
+  hold_until?: Date | string | null
+  version?: number | null
 }
 
 export type BookingCreateOrConnectWithoutUserInput = {
@@ -650,10 +749,16 @@ export type BookingCreateManySeatInput = {
   account_id: number
   showtimes_id: number
   date?: Date | string | null
+  status?: string | null
+  hold_until?: Date | string | null
+  version?: number | null
 }
 
 export type BookingUpdateWithoutSeatInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hold_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   User?: Prisma.UserUpdateOneRequiredWithoutBookingNestedInput
   ShowTimes?: Prisma.ShowTimesUpdateOneRequiredWithoutBookingNestedInput
 }
@@ -663,6 +768,9 @@ export type BookingUncheckedUpdateWithoutSeatInput = {
   account_id?: Prisma.IntFieldUpdateOperationsInput | number
   showtimes_id?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hold_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type BookingUncheckedUpdateManyWithoutSeatInput = {
@@ -670,6 +778,9 @@ export type BookingUncheckedUpdateManyWithoutSeatInput = {
   account_id?: Prisma.IntFieldUpdateOperationsInput | number
   showtimes_id?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hold_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type BookingCreateManyShowTimesInput = {
@@ -677,10 +788,16 @@ export type BookingCreateManyShowTimesInput = {
   account_id: number
   seat_id: number
   date?: Date | string | null
+  status?: string | null
+  hold_until?: Date | string | null
+  version?: number | null
 }
 
 export type BookingUpdateWithoutShowTimesInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hold_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   User?: Prisma.UserUpdateOneRequiredWithoutBookingNestedInput
   Seat?: Prisma.SeatUpdateOneRequiredWithoutBookingNestedInput
 }
@@ -690,6 +807,9 @@ export type BookingUncheckedUpdateWithoutShowTimesInput = {
   account_id?: Prisma.IntFieldUpdateOperationsInput | number
   seat_id?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hold_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type BookingUncheckedUpdateManyWithoutShowTimesInput = {
@@ -697,6 +817,9 @@ export type BookingUncheckedUpdateManyWithoutShowTimesInput = {
   account_id?: Prisma.IntFieldUpdateOperationsInput | number
   seat_id?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hold_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type BookingCreateManyUserInput = {
@@ -704,10 +827,16 @@ export type BookingCreateManyUserInput = {
   showtimes_id: number
   seat_id: number
   date?: Date | string | null
+  status?: string | null
+  hold_until?: Date | string | null
+  version?: number | null
 }
 
 export type BookingUpdateWithoutUserInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hold_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   ShowTimes?: Prisma.ShowTimesUpdateOneRequiredWithoutBookingNestedInput
   Seat?: Prisma.SeatUpdateOneRequiredWithoutBookingNestedInput
 }
@@ -717,6 +846,9 @@ export type BookingUncheckedUpdateWithoutUserInput = {
   showtimes_id?: Prisma.IntFieldUpdateOperationsInput | number
   seat_id?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hold_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type BookingUncheckedUpdateManyWithoutUserInput = {
@@ -724,6 +856,9 @@ export type BookingUncheckedUpdateManyWithoutUserInput = {
   showtimes_id?: Prisma.IntFieldUpdateOperationsInput | number
   seat_id?: Prisma.IntFieldUpdateOperationsInput | number
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hold_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 
@@ -734,6 +869,9 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   showtimes_id?: boolean
   seat_id?: boolean
   date?: boolean
+  status?: boolean
+  hold_until?: boolean
+  version?: boolean
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   ShowTimes?: boolean | Prisma.ShowTimesDefaultArgs<ExtArgs>
   Seat?: boolean | Prisma.SeatDefaultArgs<ExtArgs>
@@ -747,9 +885,12 @@ export type BookingSelectScalar = {
   showtimes_id?: boolean
   seat_id?: boolean
   date?: boolean
+  status?: boolean
+  hold_until?: boolean
+  version?: boolean
 }
 
-export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"ticket_id" | "account_id" | "showtimes_id" | "seat_id" | "date", ExtArgs["result"]["booking"]>
+export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"ticket_id" | "account_id" | "showtimes_id" | "seat_id" | "date" | "status" | "hold_until" | "version", ExtArgs["result"]["booking"]>
 export type BookingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   User?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   ShowTimes?: boolean | Prisma.ShowTimesDefaultArgs<ExtArgs>
@@ -769,6 +910,9 @@ export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     showtimes_id: number
     seat_id: number
     date: Date | null
+    status: string | null
+    hold_until: Date | null
+    version: number | null
   }, ExtArgs["result"]["booking"]>
   composites: {}
 }
@@ -1146,6 +1290,9 @@ export interface BookingFieldRefs {
   readonly showtimes_id: Prisma.FieldRef<"Booking", 'Int'>
   readonly seat_id: Prisma.FieldRef<"Booking", 'Int'>
   readonly date: Prisma.FieldRef<"Booking", 'DateTime'>
+  readonly status: Prisma.FieldRef<"Booking", 'String'>
+  readonly hold_until: Prisma.FieldRef<"Booking", 'DateTime'>
+  readonly version: Prisma.FieldRef<"Booking", 'Int'>
 }
     
 

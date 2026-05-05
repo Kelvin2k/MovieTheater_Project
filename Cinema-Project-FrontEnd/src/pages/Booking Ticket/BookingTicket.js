@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { cinemaSchedule } from "../../services/cinemaSchedule";
 import { Modal, notification } from "antd";
@@ -16,9 +16,69 @@ const BookingTicket = () => {
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
-    setIsModalOpen(true);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotificationWithIcon = (type, title = "", description = "") => {
+    api[type]({
+      title: title,
+      description: description,
+    });
   };
+
+  const fetchSeatData = useCallback(() => {
+    cinemaSchedule
+      .getShowTimeSeat(showTimeId)
+      .then((result) => {
+        setSeatLayout(result.data.seatsList);
+        setmovieInfo(result.data.movieInfo);
+        dispatch(endedLoading());
+      })
+      .catch(() => {
+        dispatch(endedLoading());
+        navigate("/*");
+      });
+  }, [showTimeId, dispatch, navigate]);
+
+  useEffect(() => {
+    dispatch(startedLoading());
+    fetchSeatData();
+  }, [fetchSeatData, dispatch]);
+
+  useEffect(() => {
+    setTotal(
+      selectedSeat.reduce((sum, seat) => sum + (seat.seat_price || 0), 0),
+    );
+  }, [selectedSeat]);
+
+  const handleSeatClick = async (seat) => {
+    const isSelected = selectedSeat.some((s) => s.seat_id === seat.seat_id);
+
+    if (isSelected) {
+      setSelectedSeat((prev) => prev.filter((s) => s.seat_id !== seat.seat_id));
+      return;
+    }
+
+    try {
+      await cinemaSchedule.bookOnHold({
+        showtimes_id: Number(showTimeId),
+        seat_id: seat.seat_id,
+      });
+      setSelectedSeat((prev) => [
+        ...prev,
+        {
+          seat_id: seat.seat_id,
+          seat_name: seat.seat_name,
+          seat_price: seat.seat_price,
+        },
+      ]);
+    } catch (err) {
+      const errMsg =
+        err?.response?.data?.message || "Seat is taken by another customer!";
+      openNotificationWithIcon("error", "Cannot select seat", errMsg);
+      fetchSeatData();
+    }
+  };
+
   const handleOk = () => {
     setIsModalOpen(false);
     const payload = {
@@ -31,76 +91,37 @@ const BookingTicket = () => {
 
     cinemaSchedule
       .bookTicket(payload)
-      .then((result) => {
+      .then(() => {
         openNotificationWithIcon(
           "success",
           "Booking Successful!",
           "Your Booking has been confirmed! Thank you!",
         );
-        cinemaSchedule
-          .getShowTimeSeat(showTimeId)
-          .then((result) => {
-            setSeatLayout(result.data.seatsList);
-            setmovieInfo(result.data.movieInfo);
-            setSelectedSeat([]);
-            setTotal(0);
-          })
-          .catch((err) => {});
+        fetchSeatData();
+        setSelectedSeat([]);
+        setTotal(0);
       })
       .catch((err) => {
-        console.log(err);
-
         const errMsg =
           err?.response?.data?.message ||
           "Failed to book ticket! Please try again.";
         openNotificationWithIcon("error", "Booking failed!", errMsg);
+        fetchSeatData();
       });
   };
+
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  const [api, contextHolder] = notification.useNotification();
-  const openNotificationWithIcon = (type, title = "", description = "") => {
-    api[type]({
-      title: title,
-      description: description,
-    });
-  };
 
-  const seatTypeNormal = [
-    "w-10 h-10 rounded-sm bg-gray-300 flex items-center justify-center text-black cursor-pointer hover:bg-gray-600 duration-300",
-  ];
-  const seatTypeVip = [
-    "w-10 h-10 rounded-sm bg-orange-400 flex items-center justify-center text-black cursor-pointer hover:bg-gray-500 duration-300",
-  ];
-  const seatTaken = [
-    "w-10 h-10 rounded-sm bg-gray-700 flex items-center justify-center cursor-not-allowed font-bold",
-  ];
-  const seatSelected = [
-    "w-10 h-10 rounded-sm bg-green-700 text-white flex items-center justify-center font-bold cursor-pointer",
-  ];
-
-  useEffect(() => {
-    dispatch(startedLoading());
-
-    cinemaSchedule
-      .getShowTimeSeat(showTimeId)
-      .then((result) => {
-        dispatch(endedLoading());
-        setSeatLayout(result.data.seatsList);
-        setmovieInfo(result.data.movieInfo);
-        dispatch(endedLoading());
-      })
-      .catch((err) => {
-        dispatch(endedLoading());
-        navigate("/*");
-      });
-  }, [dispatch, navigate, showTimeId]);
-  useEffect(() => {
-    setTotal(
-      selectedSeat.reduce((sum, seat) => sum + (seat.seat_price || 0), 0),
-    );
-  }, [selectedSeat]);
+  const seatTypeNormal =
+    "w-10 h-10 rounded-sm bg-gray-300 flex items-center justify-center text-black cursor-pointer hover:bg-gray-600 duration-300";
+  const seatTypeVip =
+    "w-10 h-10 rounded-sm bg-orange-400 flex items-center justify-center text-black cursor-pointer hover:bg-gray-500 duration-300";
+  const seatTaken =
+    "w-10 h-10 rounded-sm bg-gray-700 flex items-center justify-center cursor-not-allowed font-bold text-white";
+  const seatSelected =
+    "w-10 h-10 rounded-sm bg-green-700 text-white flex items-center justify-center font-bold cursor-pointer";
 
   return (
     <div className="container mx-auto">
@@ -109,83 +130,41 @@ const BookingTicket = () => {
       <div className="content grid grid-cols-1 md:grid-cols-5! sm:gap-x-5 py-10 lg:gap-x-20">
         <div className="seat_booking grid grid-cols-5 lg:grid-cols-8! col-span-full sm:col-span-3 gap-3 p-3 rounded-2xl">
           {seatLayout.map((seat, index) => {
-            const isSlected = selectedSeat.some(
-              (s) => s.seat_name === seat.seat_name,
+            const isSelected = selectedSeat.some(
+              (s) => s.seat_id === seat.seat_id,
             );
+            const isUnavailable =
+              !isSelected &&
+              (seat.isBooked ||
+                seat.status === "BOOKED" ||
+                seat.status === "HELD");
+
+            if (isUnavailable) {
+              return (
+                <button key={index} className={seatTaken} disabled>
+                  X
+                </button>
+              );
+            }
+
+            const seatClass = isSelected
+              ? seatSelected
+              : seat.seat_type === "VIP"
+                ? seatTypeVip
+                : seatTypeNormal;
+
             return (
-              <div key={index}>
-                {seat.userName === null && seat.seat_type === "Standard" ? (
-                  <button
-                    className={isSlected ? seatSelected : seatTypeNormal}
-                    key={index}
-                    name={seat.seat_name}
-                    value={seat.seat_name}
-                    onClick={(e) => {
-                      setSelectedSeat((prev) => {
-                        const exists = prev.some(
-                          (s) => s.seat_name === seat.seat_name,
-                        );
-                        if (exists)
-                          return prev.filter(
-                            (s) => s.seat_name !== seat.seat_name,
-                          );
-                        return [
-                          ...prev,
-                          {
-                            seat_id: seat.seat_id,
-                            seat_name: seat.seat_name,
-                            seat_price: seat.seat_price,
-                          },
-                        ];
-                      });
-                    }}
-                  >
-                    {index + 1}
-                  </button>
-                ) : null}
-                {seat.userName === null && seat.seat_type === "VIP" ? (
-                  <button
-                    className={isSlected ? seatSelected : seatTypeVip}
-                    key={index}
-                    name={seat.seat_name}
-                    value={seat.seat_name}
-                    onClick={(e) => {
-                      setSelectedSeat((prev) => {
-                        const exists = prev.some(
-                          (s) => s.seat_name === seat.seat_name,
-                        );
-                        if (exists)
-                          return prev.filter(
-                            (s) => s.seat_name !== seat.seat_name,
-                          );
-                        return [
-                          ...prev,
-                          {
-                            seat_id: seat.seat_id,
-                            seat_name: seat.seat_name,
-                            seat_price: seat.seat_price,
-                          },
-                        ];
-                      });
-                    }}
-                  >
-                    {index + 1}
-                  </button>
-                ) : null}
-                {seat.userName ? (
-                  <button
-                    className={seatTaken}
-                    key={index}
-                    name={seat.seat_name}
-                    value={seat.seat_name}
-                  >
-                    X
-                  </button>
-                ) : null}
-              </div>
+              <button
+                key={index}
+                className={seatClass}
+                onClick={() => handleSeatClick(seat)}
+              >
+                {index + 1}
+              </button>
             );
           })}
         </div>
+
         <div className="grid grid-cols-2 sm:grid-cols-4! gap-4 col-span-full md:hidden my-5">
           <div className="flex items-center gap-2 whitespace-nowrap">
             <div className="h-8 w-8 rounded bg-gray-400 "></div>
@@ -207,12 +186,12 @@ const BookingTicket = () => {
           </div>
         </div>
 
-        <div className="provisional_invoice p-0 lg:pr-10 rounded-lg col-span-full md:mx-0 md:w-full  md:col-span-2!">
+        <div className="provisional_invoice p-0 lg:pr-10 rounded-lg col-span-full md:mx-0 md:w-full md:col-span-2!">
           <div>
             <section className="bg-white antialiased dark:bg-gray-900 rounded-lg">
               <Modal
                 title="Check Out Confirmation"
-                closable={{ "aria-label": "Cusstom Close Button" }}
+                closable={{ "aria-label": "Custom Close Button" }}
                 open={isModalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
@@ -220,7 +199,7 @@ const BookingTicket = () => {
               >
                 <p>Are you sure you want to complete your order?</p>
               </Modal>
-              <form action="" className="mx-auto h-fit">
+              <form className="mx-auto h-fit">
                 <div className="mx-auto md:max-w-3xl p-5 lg:p-5 w-full">
                   <h2 className="lg:text-3xl font-bold text-gray-900 dark:text-white mb-5 text-center uppercase md:text-base text-lg">
                     Provisional Invoice
@@ -247,7 +226,7 @@ const BookingTicket = () => {
                           <tr className="table-row">
                             <td className="whitespace-nowrap py-4 md:w-full">
                               <p className="font-bold md:text-base lg:text-lg text-sm">
-                                Theater Addresss:
+                                Theater Address:
                               </p>
                             </td>
                             <td className="p-4 text-right md:text-base lg:text-lg text-sm font-bold dark:text-white md:w-full text-green-500">
@@ -297,9 +276,7 @@ const BookingTicket = () => {
                               <div className="grid grid-cols-2 w-fit gap-x-2">
                                 {selectedSeat?.map((seat, index) => {
                                   return (
-                                    <p className="" key={index}>
-                                      Seat {seat.seat_name}
-                                    </p>
+                                    <p key={index}>Seat {seat.seat_name}</p>
                                   );
                                 })}
                               </div>
@@ -343,7 +320,7 @@ const BookingTicket = () => {
                       <div className="gap-4 flex items-center justify-center mt-4">
                         <button
                           type="button"
-                          className="rounded-lg  border border-gray-200 px-5  py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 cursor-pointer duration-300 bg-gray-200 w-fit"
+                          className="rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 cursor-pointer duration-300 bg-gray-200 w-fit"
                           onClick={() => {
                             navigate(-1);
                           }}
@@ -352,9 +329,14 @@ const BookingTicket = () => {
                         </button>
                         <button
                           type="button"
-                          className=" flex items-center justify-center rounded-lg bg-primary-700  px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300  dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 sm:mt-0 bg-red-500 hover:bg-red-700 cursor-pointer duration-300 w-fit"
+                          disabled={selectedSeat.length === 0}
+                          className={`flex items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium text-white sm:mt-0 duration-300 w-fit ${
+                            selectedSeat.length === 0
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : "bg-red-500 hover:bg-red-700 cursor-pointer"
+                          }`}
                           onClick={() => {
-                            showModal(true);
+                            setIsModalOpen(true);
                           }}
                         >
                           Click to buy!

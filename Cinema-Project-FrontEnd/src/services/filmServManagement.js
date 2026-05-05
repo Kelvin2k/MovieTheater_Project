@@ -15,7 +15,7 @@ export const filmServManagement = {
   },
   getCinemaShowTime: (cinemaCode) => {
     return https.get(
-      `cinema/get-showtimes-info-on-cinema-chain-id?CinemaComplexId=${cinemaCode}`,
+      `cinema/get-showtimes-info-on-cinema-chain-id?CinemaChainId=${cinemaCode}`,
     );
   },
   getMovieList: () => {

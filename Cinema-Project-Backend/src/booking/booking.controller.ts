@@ -16,6 +16,7 @@ import { JwtAuthGuard } from 'src/jwtAuthGuard';
 import type { Request } from 'express';
 import { CreateShowTimeDto } from './dto/createShowTime.dto';
 import { TokenService } from 'src/Authenticate/token.service';
+import { HoldSeatDto } from './dto/holdSeat.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -47,5 +48,20 @@ export class BookingController {
   @Post('/create-show-time')
   async createShowTime(@Body() data: CreateShowTimeDto): Promise<ShowTimes> {
     return await this.bookingService.createShowTime(data);
+  }
+
+  // Check Booking Held
+  @Post('/hold-seat')
+  async heldBookingSeat(
+    @Body() data: HoldSeatDto,
+    @Headers('Token') token: string,
+  ) {
+    const user = await this.tokenService.validateToken(token);
+    const { account_id } = user.data;
+    return await this.bookingService.heldBookingSeat(
+      data.showtimes_id,
+      data.seat_id,
+      account_id,
+    );
   }
 }

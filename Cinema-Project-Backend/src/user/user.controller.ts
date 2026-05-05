@@ -128,7 +128,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Delete('/delete-user/')
   async deleteUser(
-    @Req() req: Request,
     @Query('Account_Id') account_id: number,
     @Headers('Token') admin_token: string,
   ): Promise<User> {
