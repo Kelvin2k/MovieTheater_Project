@@ -34,4 +34,6 @@ WORKDIR /usr/share/nginx/html
 
 COPY --from=builder /project_movie/build .
 
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80

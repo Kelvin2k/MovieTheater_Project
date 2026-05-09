@@ -41,7 +41,7 @@ const Login = () => {
           saveLocalStore(result, "userInfo");
           const userInformation = getLocalStorage("userInfo");
           setTimeout(() => {
-            if (userInformation.user_type === "QuanTri") {
+            if (userInformation.user_type === "admin") {
               navigate("/admin");
             } else {
               navigate("/");
